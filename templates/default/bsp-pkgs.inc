@@ -1,5 +1,4 @@
 IMAGE_INSTALL += "ceetm"
-IMAGE_INSTALL += "dpdk"
 IMAGE_INSTALL += "restool"
 IMAGE_INSTALL += "i2c-tools"
 IMAGE_INSTALL += "can-utils"
