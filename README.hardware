@@ -49,6 +49,7 @@ the corresponding h/w features exist.
 	+ Ethernet: 1) Support for two 10 GbE, PHY AQR107, copper (2 x RJ45)
 		    2) Support for two 1 GbE, PHY AR8035, copper (2 x RJ45)
 		    3) Support for one 40 GbE, PHY CS4223, QSFP+ (1 x Optical)
+		    4) Support for two 25 GbE, PHY IN112525, SFP+ (2 x Optical)
   o Storage
 	+ FLEXSPI: 64 MB Serial NOR flash, 8-bit
 	+ SD/MMC: eSDHC controller
@@ -71,7 +72,6 @@ the corresponding h/w features exist.
 The following features are not supported and validated:
   x DMA Engine: queue direct memory access (QDMA) controller
   x Decompression and compression engine (DCE 1.0)
-  x Ethernet 25 GbE, PHY IN112525, SFP+ (2 x Optical)
 
 4. BSP Notes
 ============
