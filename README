@@ -172,7 +172,7 @@ and burn it to the target board under the U-Boot prompt using the commands below
  => qixis_reset altbank
 to switch to DEV#1
 
-Note: if you want to program the DEV#0 , please firstly change to DEV#1,
+Note: if you want to program the DEV#0, please firstly change to DEV#1,
 then use the above steps to program the pre-built image to #DEV0. After
 burn of the image, use the following command to boot from #DEV0.
  => reset
@@ -255,7 +255,7 @@ DPMAC17@xgmii and DPMAC18@xgmii are 1G Copper ports,
 DPMAC3@xgmii and DPMAC4@xgmii are 10G Copper ports.
 DPMAC2@xlaui4 is 40G Optical ports.
 
-These ports' status are controlled by DPL. SDK provides a default DPL:
+These ports' status is controlled by DPL. SDK provides a default DPL:
 
 dpl-2dpni.dtb
 
@@ -263,8 +263,8 @@ It enables the DPMAC17@xgmii port and DPMAC2@xlaui4 port.
 To enable other ports in kernel, user can modify this DPL or through an
 userspace application "restool" which is provided by SDK.
 Unfortunately, the DPL has NXP's private license,
-WindRiver Linux can't merge them.
-So if user want to enable other ports in WindRiver Linux, user can
+Wind River Linux can't merge them.
+So if user want to enable other ports in Wind River Linux, user can
 update SDK's DPL's "connections" section manually:
 
 	connections {
@@ -275,7 +275,7 @@ update SDK's DPL's "connections" section manually:
 	};
 
 
-For instance, if user want to enalbe the first Optical port, can replace
+For instance, if user want to enable the first Optical port, can replace
 
 			endpoint2 = "dpmac@17";
 to
