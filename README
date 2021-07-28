@@ -23,7 +23,7 @@ when using the Wind River setup.sh wrapper.
 
 License
 -------
-Copyright (C) 2019 Wind River Systems, Inc.
+Copyright (C) 2021 Wind River Systems, Inc.
 
 The right to copy, distribute or otherwise make use of this software may
 be licensed only pursuant to the terms of an applicable Wind River license
@@ -43,7 +43,7 @@ The following table summarizes the valid Wind River Linux distros for this BSP.
   +--------------+-------------+-------------+-------------+
   | valid/distro |   wrlinux   | wrlinux-cgl | wrlinux-ovp |
   +--------------+-------------+-------------+-------------+
-  |    valid     |      Y      |      Y      |      N      |
+  |    valid     |      Y      |      N      |      N      |
   +--------------+-------------+-------------+-------------+
 
 For the supported kernel type for this BSP, please check the TARGET_SUPPORTED_KTYPES
@@ -180,7 +180,7 @@ Please be very careful when load those binaries to flash.
 
 5.3. FlexSPI NOR Flash Chip-select
 --------------------------
-On the LX2160ARDB revisions 1.0, switch SW1 bits 6-8 to control which bank
+On the LX2160ARDB revisions 2.0, switch SW1 bits 6-8 to control which bank
 the SoC loads from when it powers up. The relevant values are:
 
 Switch Settings 	NOR CS
@@ -195,11 +195,11 @@ mentioned in the sections
 
 	"4.2 LSDK memory layout and Userland"
 and
-	"4.1.13 LSDK Quick Start Guide for LX2160ARDB"
+	"4.1.14 LSDK Quick Start Guide for LX2160ARDB Rev2"
 
 in the NXP's SDK user manual
 
-	"Layerscape Software Development Kit User Guide 20.04.pdf".
+	"Layerscape Software Development Kit User Guide 20.12.pdf".
 
 
 6. Creating Partitioned Images(WIC)
@@ -210,7 +210,7 @@ partitioned image on a SD card. The wic command
 generates partitioned images from existing OpenEmbedded build artifacts.
 User can refer to the below URL to get more WIC details:
 
-http://www.yoctoproject.org/docs/2.4/mega-manual/mega-manual.html#creating-partitioned-images-using-wic
+https://www.yoctoproject.org/docs/3.1/dev-manual/dev-manual.html#creating-partitioned-images-using-wic
 
 This BSP supports disk images for SD card.
 After build the project, user will get a WIC image under the directory
@@ -240,26 +240,30 @@ Board can boot automatically by set the below uboot environment variables:
 
 => setenv bootargs console=ttyAMA0,115200 earlycon=pl011,mmio32,0x21c0000 root=/dev/mmcblk0p2 rw no_console_suspend ip=dhcp
 
-=> setenv bootcmd 'fsl_mc start mc 0x80a00000 0x80e00000; fsl_mc lazyapply dpl 0x80d00000; fatload mmc 0:1 $loadaddr $bootfile; fatload mmc 0:1 $fdtaddr $fdtfile; booti $loadaddr - $fdtaddr'
+If boot from SD card
+=> setenv bootcmd 'mmc read 0x80d00000 0x6800 0x800; fsl_mc lazyapply dpl 0x80d00000; fatload mmc 0:1 $loadaddr $bootfile; fatload mmc 0:1 $fdtaddr $fdtfile; booti $loadaddr - $fdtaddr'
+If boot from FlexSPI NOR flash
+=> setenv bootcmd 'sf probe 0:0; sf read 0x80d00000 0xd00000 0x100000; fsl_mc lazyapply dpl 0x80d00000; fatload mmc 0:1 $loadaddr $bootfile; fatload mmc 0:1 $fdtaddr $fdtfile; booti $loadaddr - $fdtaddr'
 
 => saveenv; run bootcmd;
 
 
-7. Enable on-board 10G ports in kernel
-======================================
+7. Enable on-board network ports in kernel
+==========================================
 
-LX2160A-RDB Rev2.0 reference board contains 2 on-board 1G ports, 2 on-board 10G ports, and 1 on-board 40G ports.
+LX2160A-RDB Rev2.0 reference board contains 2 on-board 1G ports, 2 on-board 10G ports, 2 on-board 25G ports and 1 on-board 40G ports.
 
 They can be found in u-boot as below:
 DPMAC17@xgmii and DPMAC18@xgmii are 1G Copper ports,
 DPMAC3@xgmii and DPMAC4@xgmii are 10G Copper ports.
+DPMAC5@25g-aui and DPMAC6@25g-aui are 25G Optical ports.
 DPMAC2@xlaui4 is 40G Optical ports.
 
 These ports' status is controlled by DPL. SDK provides a default DPL:
 
-dpl-2dpni.dtb
+dpl-eth.19.dtb
 
-It enables the DPMAC17@xgmii port and DPMAC2@xlaui4 port.
+It enables the DPMAC17@xgmii port and DPMAC2@xlaui4 port by default.
 To enable other ports in kernel, user can modify this DPL or through an
 userspace application "restool" which is provided by SDK.
 Unfortunately, the DPL has NXP's private license,
@@ -280,22 +284,25 @@ For instance, if user want to enable the first Optical port, can replace
 			endpoint2 = "dpmac@17";
 to
 
-			endpoint2 = "dpmac@18";
+			endpoint2 = "DPMAC2@xlaui4";
 
 Then generate a new DPL on Host:
 
-dtc -I dts -O dtb dpl-eth.0x13.dts -o dpl.dtb
+dtc -I dts -O dtb dpl-eth.19.dts -o dpl.dtb
 
 Upload this DPL to board and deploy it onto the board:
 
-tftp d0000000 <path>/dpl-eth.0x13.dtb; sf erase d00000 +c0000;sf write d0000000 d00000 c0000;
+If boot from FlexSPI NOR flash
+=> tftp 0xd0000000 <path>/dpl.dtb; sf probe 0:0; sf erase 0xd00000 +0xc0000;sf write 0xd0000000 0xd00000 0xc0000;
+If boot from SD card
+=> tftp 0xd0000000 <path>/dpl.dtb; mmc dev 0; mmc write 0xd0000000 0x6800 0x800;
 
 To get more details about above descriptions, please refer to instructions
 mentioned in the NXP's SDK user manual
 
-	"4.1.13.6 Bringing up DPPA2 network interfaces"
+	"4.1.14.6 Bringing up DPPA2 network interfaces"
 in
-	"Layerscape Software Development Kit User Guide 20.04.pdf".
+	"Layerscape Software Development Kit User Guide 20.12.pdf".
 
 8. kexec/kdump
 ==============
@@ -315,39 +322,20 @@ To reserve a memory region for the capture kernel, pass "crashkernel=512M"
 via the U-Boot command line.
 
 NOTES:
-1. Use vmlinux as a secondary kernel. It can be found in the directory
-   tmp-glibc/work/<bsp name>-wrs-linux/linux-yocto/<kernel version>/linux-<bsp name>-<kernel type>-build/vmlinux
+1. Use Image as a secondary kernel. It can be found in the directory
+   tmp-glibc/deploy/images/nxp-lx2xxx/Image
 2. 512 MB (the size of the memory reserved for crash kernel) is the
    recommended amount of memory. If you add more features to the kernel, you
    can increase this value to accommodate the capture kernel.
 
-Workaround:
-1. Kexec: DPAA2 is unsupported in 2nd kernel.
-   User can use on-board Intel E1000e card to do Ethernet functions in 2nd
-   kernel(e.g., mount NFS, scp).
-   User can turn DPAA2 off in two ways:
-a) Don't call "fsl_mc start" in U-Boot command line, this will disable the
-   DPAA2 both in the 1st and 2nd kernel.
-b) If 1st kernel has already enabled DPAA2, please use the below 3 commands
-   to destroy all DPNI interfaces in 1st kernel before calling "kexec -e":
-
-   # restool dprc show dprc.1 | grep dpni
-   /* Above command is to find all DPNI interfaces. */
-
-   # echo dpni.0 > /sys/bus/fsl-mc/devices/dpni.0/driver/unbind
-   /* Unbind DPNI interface from fsl_mc driver */
-
-   # restool dpni destroy dpni.0
-   /* Destroy this DPNI interface */
-c) User needs to append argument "irqchip.gicv3_nolpi=1" to the first kernel
-   to disable LPI to make Kexec work.
-
-2. Kdump: PCI-MSI and SMP is unsupported in 2nd kernel.
-   User needs to append two arguments "pci=nomsi maxcpus=1".
-   Since this 2nd kernel operates under significantly constrained
-   initialization conditions and is not meant to be a "replacement" kernel.
-   Rather it has a single goal -- to enable data collection with respect to
-   the issue that impacted the initial kernel, and nothing else.
+3. Kdump
+   DPAA2 is unsupported in the 2nd kernel, so user can use a PCIe ethernet card to support
+   the network feature in the 2nd kernel(e.g. mount NFS, scp).
+   SMP is unsupported in the 2nd kernel, so user needs to append argument "maxcpus=1"
+   in the 2nd kernel bootargs.
+   Because the 2nd kernel runs under limited resource, it should not work as a
+   "replacement" kernel. In contrast, the only purpose of the 2nd kernel is to collect
+   the crashing information of the 1st kernel.
 
 For more detailed information about kdump, please refer to
 Documentation/kdump/kdump.txt in the kernel source tree.
@@ -357,5 +345,3 @@ Documentation/kdump/kdump.txt in the kernel source tree.
 
 By default, the DPDK user space package is not installed. In order to install
 DPDK package to rootfs, please refer to wrlinux/templates/feature/dpdk/README.
-
-
