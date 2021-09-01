@@ -1,4 +1,3 @@
-IMAGE_INSTALL += "restool"
 IMAGE_INSTALL += "i2c-tools"
 IMAGE_INSTALL += "can-utils"
 # Install NXP userspace utility
@@ -7,6 +6,7 @@ IMAGE_INSTALL += " \
    ${@nxp_supported_archs(["aarch64"], "dce", "", d)} \
    ${@nxp_supported_archs(["aarch64"], "odp", "", d)} \
    ${@nxp_supported_archs(["aarch64"], "ofp", "", d)} \
+   ${@nxp_supported_archs(["aarch64"], "restool", "", d)} \
 "
 
 def nxp_supported_archs(checkarch, truevalue, falsevalue, d):
