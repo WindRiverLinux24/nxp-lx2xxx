@@ -304,6 +304,24 @@ mentioned in the NXP's SDK user manual
 in
 	"Layerscape Software Development Kit User Guide 20.12.pdf".
 
+Note:
+In above PDF file, section "4.1.14.6.3 Add and destroy network interfaces", descibe the
+steps about how to destroy network interfaces. But it is not compatible with the latest sdk v5.10.35 kernel.
+It is need to add a command to disconnect dprc and dpmac before unbind dpmac. Example as below:
+
+Add a DPNI object and connect it to a DPMAC.
+# ls-addni dpmac.18
+Created interface: ni2 (object:dpni.2, endpoint: dpmac.18)
+
+Display information about the newly created dpni.2 interface
+# restool dpni info dpni.2
+
+Destroy the existing interface
+# restool dprc disconnect dprc.1 --endpoint=dpmac.18
+# echo dpni.2 > /sys/bus/fsl-mc/drivers/fsl_dpaa2_eth/unbind
+# restool dpni destroy dpni.2
+
+
 8. kexec/kdump
 ==============
 
