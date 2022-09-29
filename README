@@ -128,13 +128,7 @@ fdtfile=fsl-lx2160a-rdb.dtb
 rootpath=/tftpboot/rootfs
 consoledev=ttyAMA0
 baudrate=115200
-othbootargs=earlycon=pl011,mmio32,0x21c0000
 
-Note: If the u-boot does not start the MC and deploy data path layout, please
-use the command 'fsl_mc start mc 0x80a00000 0x80e00000' to start the MC and
-command 'fsl_mc lazyapply dpl 0x80d00000' to deploy data path layout, the last
-command can avoid the error log 'ERROR: fsl-mc: DPL is not applied' for booting
-the linux kernel image.
 
 5. Update NXP's pre-built image
 ===============================
@@ -363,3 +357,17 @@ Documentation/kdump/kdump.txt in the kernel source tree.
 
 By default, the DPDK user space package is not installed. In order to install
 DPDK package to rootfs, please refer to wrlinux/templates/feature/dpdk/README.
+
+10. LX2080A mode
+================
+
+Enable LX2080A mode by setting sw3[3] as 0.
+Detailed information, please refer to "QorIQ LX2160A Reference Design
+Board Getting Started Guide" documentation.
+
+11. Watchdog
+============
+
+For Lx2160A SBSA watchdog, the first interrupt is not enabled by default. Setting
+sbsa-gwdt.action to 1 in U-Boot bootargs could enable it. Same as NXP SDK,
+SBSA watchdog on LX2160A will not reset the kernel but get kernel panic.
