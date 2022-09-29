@@ -4,8 +4,6 @@ IMAGE_INSTALL += "can-utils"
 IMAGE_INSTALL += " \
    ${@nxp_supported_archs(["aarch64"], "ceetm", "", d)} \
    ${@nxp_supported_archs(["aarch64"], "dce", "", d)} \
-   ${@nxp_supported_archs(["aarch64"], "odp", "", d)} \
-   ${@nxp_supported_archs(["aarch64"], "ofp", "", d)} \
    ${@nxp_supported_archs(["aarch64"], "restool", "", d)} \
 "
 
