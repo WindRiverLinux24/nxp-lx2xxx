@@ -1,5 +1,7 @@
 IMAGE_INSTALL += "i2c-tools"
 IMAGE_INSTALL += "can-utils"
+IMAGE_INSTALL += " iproute2"
+
 # Install NXP userspace utility
 IMAGE_INSTALL += " \
    ${@nxp_supported_archs(["aarch64"], "ceetm", "", d)} \
