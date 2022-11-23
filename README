@@ -156,7 +156,7 @@ download images to DEV#1 and to boot from DEV#1.
 NXP provides a pre-built image which contains U-Boot, RCW, etc.
 Please download it through:
 
- wget https://www.nxp.com/lgfiles/sdk/lsdk2004/firmware_lx2160ardb_rev2_uboot_xspiboot.img
+ wget https://www.nxp.com/lgfiles/sdk/lsdk2108/firmware_lx2160ardb_rev2_xspiboot.img
 and burn it to the target board under the U-Boot prompt using the commands below:
 
  => sf probe 0:1;
