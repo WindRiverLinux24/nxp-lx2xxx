@@ -21,8 +21,8 @@ This BSP supports the following boards:
 2. Change History
 =================
 
-  - 2022/11 (LINUXPG-1161): Wind River Linux 10.22 RCPL03, Standard and preempt-rt
-			    based on NXP LSDK2108.
+  - 2023/11 (LINUXPG-1694): Wind River Linux 10.23 RCPL02. Standard and preempt-rt
+			    based on NXP Layerscape Linux Distribution POC L6.1.1_1.0.0.
 
 3. BSP Features
 ===============
@@ -82,8 +82,8 @@ in a different environment it may possibly have some issues.
 	SoC:  LX2160ACE Rev2.0 (0x87360020)
 	Board: LX2160ACE Rev2.0-RDB, Board version: B FPGA: v8.0
 	BootLoader: U-Boot
-	BootLoader Version: 2021.04-ge2eba0cd58 (Aug 27 2021 - 22:24:12 +0800)
-	Management Complex Version: 10.28.1
+	BootLoader Version: 2022.04+fsl+g7376547b9e (Mar 01 2023 - 07:35:40 +0000)
+	Management Complex Version: 10.35.0
 
 4.2 Specify boot medium
 -----------------------

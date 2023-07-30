@@ -23,7 +23,7 @@ when using the Wind River setup.sh wrapper.
 
 License
 -------
-Copyright (C) 2021 Wind River Systems, Inc.
+Copyright (C) 2023 Wind River Systems, Inc.
 
 The right to copy, distribute or otherwise make use of this software may
 be licensed only pursuant to the terms of an applicable Wind River license
@@ -40,11 +40,11 @@ stated in each recipe (.bb file) unless other stated.
 The following table summarizes the valid Wind River Linux distros for this BSP.
 'Y' in each content cell stands for supported; 'N' stands for not supported:
 
-  +--------------+-------------+-------------+-------------+
-  | valid/distro |   wrlinux   | wrlinux-cgl | wrlinux-ovp |
-  +--------------+-------------+-------------+-------------+
-  |    valid     |      Y      |      N      |      N      |
-  +--------------+-------------+-------------+-------------+
+  +--------------+-------------+-------------+
+  | valid/distro |   wrlinux   | wrlinux-ovp |
+  +--------------+-------------+-------------+
+  |    valid     |      Y      |      N      |
+  +--------------+-------------+-------------+
 
 For the supported kernel type for this BSP, please check the TARGET_SUPPORTED_KTYPES
 by running 'bitbake -e virtual/kernel | grep "^TARGET_SUPPORTED_KTYPES="'.
@@ -60,7 +60,7 @@ along with patch descriptions use git whatchanged on the default
 kernel (git whatchanged <kernel_type>..<bsp_name>). For example:
 
   # cd tmp-glibc/work-shared/<bsp_name>/kernel-source
-  # git whatchanged <kernel_version>/base..<kernel_version>/standard/<bsp_branch>
+  # git whatchanged v6.1/standard/base..v6.1/standard/nxp-sdk-6.1/nxp-soc
 
 
 4. Boot Instructions
@@ -130,7 +130,7 @@ consoledev=ttyAMA0
 baudrate=115200
 
 
-5. Update NXP's pre-built image
+5. Program NXP bootloader image
 ===============================
 
 5.1. On-Board NOR Flash vbank Configuration
@@ -150,14 +150,17 @@ images into DEV#1 as needed. The instructions below list commands to
 download images to DEV#1 and to boot from DEV#1.
 
 
-5.2. NXP's pre-built image
---------------------------
+5.2. NXP bootloader image
+-------------------------
 
-NXP provides a pre-built image which contains U-Boot, RCW, etc.
-Please download it through:
+WRLinux product provides a solution to build bootloader image which contains U-Boot, RCW, etc.
+Please refer to section 12 to build NXP bootloader image.
 
- wget https://www.nxp.com/lgfiles/sdk/lsdk2108/firmware_lx2160ardb_rev2_xspiboot.img
-and burn it to the target board under the U-Boot prompt using the commands below:
+After building, the bootloader image(firmware_lx2160ardb-rev2_uboot_<boot-type>.img) is generated
+in directory <building-path>/build/tmp-glibc/deploy/images/nxp-lx2xxx.
+
+And then burn it to the target board under the U-Boot prompt using the commands below:
+
 
  => sf probe 0:1;
  => tftp 0xa0000000 firmware_lx2160ardb_rev2_uboot_xspiboot.img
@@ -173,7 +176,8 @@ burn of the image, use the following command to boot from #DEV0.
 Please be very careful when load those binaries to flash.
 
 5.3. FlexSPI NOR Flash Chip-select
---------------------------
+----------------------------------
+
 On the LX2160ARDB revisions 2.0, switch SW1 bits 6-8 to control which bank
 the SoC loads from when it powers up. The relevant values are:
 
@@ -187,13 +191,13 @@ off off on 		Load from NOR Flash Dev#1
 To get more details about above descriptions, please refer to instructions
 mentioned in the sections
 
-	"4.2 LSDK memory layout and Userland"
+	"4.8 Layerscape LDP memory layout and userland"
 and
-	"4.1.14 LSDK Quick Start Guide for LX2160ARDB Rev2"
+	"4.7.10 Quick start guide for LX2160ARDB Rev2"
 
 in the NXP's SDK user manual
 
-	"Layerscape Software Development Kit User Guide 20.12.pdf".
+	"LLDPUG_RevL6.1.1-1.0.0.pdf".
 
 
 6. Creating Partitioned Images(WIC)
@@ -204,7 +208,7 @@ partitioned image on a SD card. The wic command
 generates partitioned images from existing OpenEmbedded build artifacts.
 User can refer to the below URL to get more WIC details:
 
-https://www.yoctoproject.org/docs/3.1/dev-manual/dev-manual.html#creating-partitioned-images-using-wic
+https://docs.yoctoproject.org/dev-manual/common-tasks.html#creating-partitioned-images-using-wic
 
 This BSP supports disk images for SD card.
 After build the project, user will get a WIC image under the directory
@@ -212,16 +216,21 @@ tmp-glibc/deploy/images/<bsp name>/ ,such as:
 
 tmp-glibc/deploy/images/nxp-lx2xxx/wrlinux-image-std-nxp-lx2xxx.wic
 
-Then user can write the output image to a SD card:
-
-Since this BSP doesn't have a firmware to read the uboot from a partition table,
-WIC image only contains kernel, dtb and rootfs. We still need to write U-boot
-image to NOR flash directly as "bootloader/README" described.
+Then user can write the output image to a SD card.
 
 6.1 Burn images to SD card
 --------------------------
 
-To burn uboot and WIC images to SD card, user only need to execute the below command:
+To burn images to SD card, user needs to follow two steps:
+
+1) Generate WIC image with NXP bootloader
+
+WRLinux product provides a solution to build WIC image with NXP bootloader.
+Please refer to section 12 for the detailed description.
+After building, the WIC image(wrlinux-image-std-nxp-lx2xxx.wic) is generated
+in directory <building-path>/build/tmp-glibc/deploy/images/nxp-lx2xxx.
+
+2) Burn WIC image
 
 # dd if=wrlinux-image-std-nxp-lx2xxx.wic of=/dev/your_sd_dev
 
@@ -294,13 +303,13 @@ If boot from SD card
 To get more details about above descriptions, please refer to instructions
 mentioned in the NXP's SDK user manual
 
-	"4.1.14.6 Bringing up DPPA2 network interfaces"
+	"4.7.10.5 Bringing up DPPA2 network interfaces"
 in
-	"Layerscape Software Development Kit User Guide 20.12.pdf".
+	"LLDPUG_RevL6.1.1-1.0.0.pdf".
 
 Note:
-In above PDF file, section "4.1.14.6.3 Add and destroy network interfaces", descibe the
-steps about how to destroy network interfaces. But it is not compatible with the latest sdk v5.10.35 kernel.
+In above PDF file, section "4.7.10.5.3 Add and destroy network interfaces", descibe the
+steps about how to destroy network interfaces. But it is not compatible with the latest sdk v6.1 kernel.
 It is need to add a command to disconnect dprc and dpmac before unbind dpmac. Example as below:
 
 Add a DPNI object and connect it to a DPMAC.
@@ -371,3 +380,30 @@ Board Getting Started Guide" documentation.
 For Lx2160A SBSA watchdog, the first interrupt is not enabled by default. Setting
 sbsa-gwdt.action to 1 in U-Boot bootargs could enable it. Same as NXP SDK,
 SBSA watchdog on LX2160A will not reset the kernel but get kernel panic.
+
+12. Build Bootloader
+===================
+
+Because of license limitation, the NXP LX2XXX bootloader is not supported on WRLinux product.
+But the necessary recipe files of building bootloader have been integrated into WRLinux product. In this way,
+the customers can build bootloader for NXP LX2XXX platform based on WRLinux product by themselves.
+To build bootloader image for NXP LX2XXX platform, it only needs to add below contents in local.conf file,
+and then build WRLinux image as usual.
+
+	BB_NO_NETWORK = '0'
+	ACCEPT_FSL_EULA = "1"
+	CUSTOMER_BUILD_BOOTLOADER = "1"
+	CUSTOMER_RECIPES:meta-qoriq += 'secure-boot-qoriq'
+	CUSTOMER_RECIPES:meta-qoriq += 'u-boot-qoriq'
+	CUSTOMER_RECIPES:meta-qoriq += 'qoriq-atf'
+	CUSTOMER_RECIPES:freescale-layer += 'management-complex'
+	CUSTOMER_RECIPES:freescale-layer += 'mc-utils'
+	CUSTOMER_RECIPES:freescale-layer += 'ddr-phy'
+	CUSTOMER_RECIPES:freescale-layer += 'uefi'
+	CUSTOMER_RECIPES:freescale-layer += 'rcw'
+	CUSTOMER_RECIPES:freescale-layer += 'ls2-phy'
+	CUSTOMER_RECIPES:freescale-layer += 'inphi'
+	CUSTOMER_RECIPES:freescale-layer += 'qoriq-cst-native'
+
+Note: If customers want to integrate bootloader into their own product, they MUST consult NXP and their own
+      legal department.
