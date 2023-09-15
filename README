@@ -243,9 +243,9 @@ Board can boot automatically by set the below uboot environment variables:
 
 => setenv bootargs console=ttyAMA0,115200 earlycon=pl011,mmio32,0x21c0000 root=/dev/mmcblk0p2 rw no_console_suspend ip=dhcp
 
-If boot from SD card
+If loading DPL from SD card
 => setenv bootcmd 'mmc read 0x80d00000 0x6800 0x800; fsl_mc lazyapply dpl 0x80d00000; fatload mmc 0:1 $loadaddr $bootfile; fatload mmc 0:1 $fdtaddr $fdtfile; booti $loadaddr - $fdtaddr'
-If boot from FlexSPI NOR flash
+If loading DPL from FlexSPI NOR flash
 => setenv bootcmd 'sf probe 0:0; sf read 0x80d00000 0xd00000 0x100000; fsl_mc lazyapply dpl 0x80d00000; fatload mmc 0:1 $loadaddr $bootfile; fatload mmc 0:1 $fdtaddr $fdtfile; booti $loadaddr - $fdtaddr'
 
 => saveenv; run bootcmd;
