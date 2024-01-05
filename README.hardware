@@ -66,7 +66,7 @@ the corresponding h/w features exist.
 3.2 Unsupported Features
 ------------------------
 
-The following features are not supported and validated:
+The following features are not supported and not validated:
   x DMA Engine: queue direct memory access (QDMA) controller
   x Decompression and compression engine (DCE 1.0)
 
