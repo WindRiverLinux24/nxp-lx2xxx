@@ -16,7 +16,8 @@ Table of Contents
 This BSP supports the following boards:
 
   + NXP LX2160ARDB Board: LX2160ACE Rev2.0-RDB, Board version: B
-  + NXP LX2160ARDB(LX2080A mode) Board: LX2160ACE Rev2.0-RDB Board version: B with cores 8-15 disabled.
+  + NXP LX2160ARDB(LX2080A mode) Board: LX2160ACE Rev2.0-RDB Board version: B
+                                        with cores 8-15 disabled.
 
 2. Change History
 =================

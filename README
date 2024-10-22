@@ -81,27 +81,26 @@ TFTP a kernel, you need at a minimum to set the following:
 	- ethaddr
 	- eth1addr
 
-Your board may ship with the values for the MAC address of
-the Ethernet interfaces set to the defaults compiled into the
-u-boot image.  You should set the ethaddr, eth1addr and so on
-as per the manufacturer assigned values, usually indicated with
-a sticker on the board.
+Your board may ship with the values for the MAC address of the Ethernet
+interfaces set to the defaults compiled into the u-boot image. You should
+set the ethaddr, eth1addr and so on as per the manufacturer assigned values,
+usually indicated with a sticker on the board.
 
-Target specifics are usually set in the "bootargs" variable, and the
-kernel image is set in the "bootfile" variable. Don't forget that if you
-want these values to be available after a power cycle you will need to run
-the saveenv command.
+Target specifics are usually set in the "bootargs" variable, and the kernel
+image is set in the "bootfile" variable. Don't forget that if you want these
+values to be available after a power cycle you will need to run the saveenv
+command.
 
 Typically convenience macros exist that will create a complete bootargs
 command line for the kernel based on variables that contain individual
-settings.  Since these macros exist as env variables themselves, they
-may or may not be present depending on who installed and configured
-u-boot for the board.
+settings. Since these macros exist as env variables themselves, they may
+or may not be present depending on who installed and configured u-boot for
+the board.
 
 The console device for the board is ttyAMA0(UART1) at 115200 baud. For the DTB
 address, 0x90000000 was used with success by Wind River. The load address
-must be high enough to not interfere with kernel decompression. A value
-of 0xa0000000 was used with success for all kernels tested by Wind River.
+must be high enough to not interfere with kernel decompression. A value of
+0xa0000000 was used with success for all kernels tested by Wind River.
 
 4.1 NFS Root File System
 ------------------------
@@ -138,8 +137,8 @@ baudrate=115200
 
 Depending on on-board switch configuration for FLEXSPI flash; software
 boots from DEV#0 and DEV#1. The default on-board switch configuration
-boots the board from DEV#0. The board can boot from DEV#1 by using
-the qixis_reset altbank command from the DEV#0 u-boot prompt.
+boots the board from DEV#0. The board can boot from DEV#1 by using the
+qixis_reset altbank command from the DEV#0 u-boot prompt.
 
 The RDB comes pre-loaded with all binaries in DEV#0.
 Users are able to program images in 2 separate virtual flash banks (DEV#0
@@ -153,14 +152,13 @@ download images to DEV#1 and to boot from DEV#1.
 5.2. NXP bootloader image
 -------------------------
 
-WRLinux product provides a solution to build bootloader image which contains U-Boot, RCW, etc.
-Please refer to section 12 to build NXP bootloader image.
+WRLinux product provides a solution to build bootloader image which contains
+U-Boot, RCW, etc. Please refer to section 12 to build NXP bootloader image.
 
-After building, the bootloader image(firmware_lx2160ardb-rev2_uboot_<boot-type>.img) is generated
-in directory <building-path>/build/tmp-glibc/deploy/images/nxp-lx2xxx.
+After building, the bootloader image (firmware_lx2160ardb-rev2_uboot_<boot-type>.img)
+is generated in directory <building-path>/tmp-glibc/deploy/images/nxp-lx2xxx.
 
 And then burn it to the target board under the U-Boot prompt using the commands below:
-
 
  => sf probe 0:1;
  => tftp 0xa0000000 firmware_lx2160ardb_rev2_uboot_xspiboot.img
@@ -204,15 +202,15 @@ in the NXP's SDK user manual
 ===================================
 
 User can use the OpenEmbedded Image Creator, wic, to create the properly
-partitioned image on a SD card. The wic command
-generates partitioned images from existing OpenEmbedded build artifacts.
-User can refer to the below URL to get more WIC details:
+partitioned image on a SD card. The wic command generates partitioned
+images from existing OpenEmbedded build artifacts. User can refer to the
+below URL to get more WIC details:
 
 https://docs.yoctoproject.org/dev-manual/wic.html
 
 This BSP supports disk images for SD card.
 After build the project, user will get a WIC image under the directory
-tmp-glibc/deploy/images/<bsp name>/ ,such as:
+tmp-glibc/deploy/images/<bsp name>/, such as:
 
 tmp-glibc/deploy/images/nxp-lx2xxx/wrlinux-image-std-nxp-lx2xxx.wic
 
@@ -239,14 +237,21 @@ in directory <building-path>/build/tmp-glibc/deploy/images/nxp-lx2xxx.
 
 Board can boot automatically by set the below uboot environment variables:
 
-=> setenv bootfile Image; setenv fdtfile fsl-lx2160a-rdb.dtb;  setenv loadaddr 0xa0000000; setenv fdtaddr 0x90000000;
+=> setenv bootfile Image; setenv fdtfile fsl-lx2160a-rdb.dtb
+=> setenv loadaddr 0xa0000000; setenv fdtaddr 0x90000000
 
-=> setenv bootargs console=ttyAMA0,115200 earlycon=pl011,mmio32,0x21c0000 root=/dev/mmcblk0p2 rw no_console_suspend ip=dhcp
+=> setenv bootargs 'console=ttyAMA0,115200 earlycon=pl011,mmio32,0x21c0000
+ root=/dev/mmcblk0p2 rw no_console_suspend ip=dhcp'
 
 If loading DPL from SD card
-=> setenv bootcmd 'mmc read 0x80d00000 0x6800 0x800; fsl_mc lazyapply dpl 0x80d00000; fatload mmc 0:1 $loadaddr $bootfile; fatload mmc 0:1 $fdtaddr $fdtfile; booti $loadaddr - $fdtaddr'
+=> setenv bootcmd 'mmc read 0x80d00000 0x6800 0x800;
+ fsl_mc lazyapply dpl 0x80d00000; fatload mmc 0:1 $loadaddr $bootfile;
+ fatload mmc 0:1 $fdtaddr $fdtfile; booti $loadaddr - $fdtaddr'
+
 If loading DPL from FlexSPI NOR flash
-=> setenv bootcmd 'sf probe 0:0; sf read 0x80d00000 0xd00000 0x100000; fsl_mc lazyapply dpl 0x80d00000; fatload mmc 0:1 $loadaddr $bootfile; fatload mmc 0:1 $fdtaddr $fdtfile; booti $loadaddr - $fdtaddr'
+=> setenv bootcmd 'sf probe 0:0; sf read 0x80d00000 0xd00000 0x100000;
+ fsl_mc lazyapply dpl 0x80d00000; fatload mmc 0:1 $loadaddr $bootfile;
+ fatload mmc 0:1 $fdtaddr $fdtfile; booti $loadaddr - $fdtaddr'
 
 => saveenv; run bootcmd;
 
@@ -254,7 +259,8 @@ If loading DPL from FlexSPI NOR flash
 7. Enable on-board network ports in kernel
 ==========================================
 
-LX2160A-RDB Rev2.0 reference board contains 2 on-board 1G ports, 2 on-board 10G ports, 2 on-board 25G ports and 1 on-board 40G ports.
+LX2160A-RDB Rev2.0 reference board contains 2 on-board 1G ports, 2 on-board
+10G ports, 2 on-board 25G ports and 1 on-board 40G ports.
 
 They can be found in u-boot as below:
 DPMAC17@xgmii and DPMAC18@xgmii are 1G Copper ports,
@@ -284,7 +290,6 @@ For instance, if user want to enable the first Optical port, can replace
 
 			endpoint2 = "dpmac@17";
 to
-
 			endpoint2 = "DPMAC2@xlaui4";
 
 Then generate a new DPL on Host:
@@ -294,9 +299,11 @@ dtc -I dts -O dtb dpl-eth.19.dts -o dpl.dtb
 Upload this DPL to board and deploy it onto the board:
 
 If boot from FlexSPI NOR flash
-=> tftp 0xd0000000 <path>/dpl.dtb; sf probe 0:0; sf erase 0xd00000 +0xc0000;sf write 0xd0000000 0xd00000 0xc0000;
+=> tftp 0xd0000000 <path>/dpl.dtb; sf probe 0:0; sf erase 0xd00000 +0xc0000
+=> sf write 0xd0000000 0xd00000 0xc0000
+
 If boot from SD card
-=> tftp 0xd0000000 <path>/dpl.dtb; mmc dev 0; mmc write 0xd0000000 0x6800 0x800;
+=> tftp 0xd0000000 <path>/dpl.dtb; mmc dev 0; mmc write 0xd0000000 0x6800 0x800
 
 To get more details about above descriptions, please refer to instructions
 mentioned in the NXP's SDK user manual
@@ -306,9 +313,10 @@ in
 	"UG10081_LLDP_6.1.55_2.2.0.pdf".
 
 Note:
-In above PDF file, section "3.7.10.5.3 Add and destroy network interfaces", describe the
-steps about how to destroy network interfaces. But it is not compatible with the latest sdk v6.6 kernel.
-It is need to add a command to disconnect dprc and dpmac before unbind dpmac. Example as below:
+In above PDF file, section "3.7.10.5.3 Add and destroy network interfaces",
+describe the steps about how to destroy network interfaces. But it is not
+compatible with the latest sdk v6.6 kernel. It is need to add a command to
+disconnect dprc and dpmac before unbind dpmac. Example as below:
 
 Add a DPNI object and connect it to a DPMAC.
 # ls-addni dpmac.18
@@ -348,13 +356,13 @@ NOTES:
    can increase this value to accommodate the capture kernel.
 
 3. Kdump
-   DPAA2 is unsupported in the 2nd kernel, so user can use a PCIe ethernet card to support
-   the network feature in the 2nd kernel(e.g. mount NFS, scp).
-   SMP is unsupported in the 2nd kernel, so user needs to append argument "maxcpus=1"
-   in the 2nd kernel bootargs.
+   DPAA2 is unsupported in the 2nd kernel, so user can use a PCIe ethernet card
+   to support the network feature in the 2nd kernel(e.g. mount NFS, scp).
+   SMP is unsupported in the 2nd kernel, so user needs to append argument
+   "maxcpus=1" in the 2nd kernel bootargs.
    Because the 2nd kernel runs under limited resource, it should not work as a
-   "replacement" kernel. In contrast, the only purpose of the 2nd kernel is to collect
-   the crashing information of the 1st kernel.
+   "replacement" kernel. In contrast, the only purpose of the 2nd kernel is to
+   collect the crashing information of the 1st kernel.
 
 For more detailed information about kdump, please refer to
 Documentation/kdump/kdump.txt in the kernel source tree.
@@ -368,25 +376,25 @@ DPDK package to rootfs, please refer to wrlinux/templates/feature/dpdk/README.
 10. LX2080A mode
 ================
 
-Enable LX2080A mode by setting sw3[3] as 0.
-Detailed information, please refer to "QorIQ LX2160A Reference Design
-Board Getting Started Guide" documentation.
+Enable LX2080A mode by setting sw3[3] as 0. Detailed information, please refer
+to "QorIQ LX2160A Reference Design Board Getting Started Guide" documentation.
 
 11. Watchdog
 ============
 
-For Lx2160A SBSA watchdog, the first interrupt is not enabled by default. Setting
-sbsa-gwdt.action to 1 in U-Boot bootargs could enable it. Same as NXP SDK,
-SBSA watchdog on LX2160A will not reset the kernel but get kernel panic.
+For Lx2160A SBSA watchdog, the first interrupt is not enabled by default.
+Setting sbsa-gwdt.action to 1 in U-Boot bootargs could enable it. Same as NXP
+SDK, SBSA watchdog on LX2160A will not reset the kernel but get kernel panic.
 
 12. Build Bootloader
 ===================
 
-Because of license limitation, the NXP LX2XXX bootloader is not supported on WRLinux product.
-But the necessary recipe files of building bootloader have been integrated into WRLinux product. In this way,
-the customers can build bootloader for NXP LX2XXX platform based on WRLinux product by themselves.
-To build bootloader image for NXP LX2XXX platform, it only needs to add below contents in local.conf file,
-and then build WRLinux image as usual.
+Because of license limitation, the NXP LX2XXX bootloader is not supported on
+WRLinux product. But the necessary recipe files of building bootloader have
+been integrated into WRLinux product. In this way, the customers can build
+bootloader for NXP LX2XXX platform based on WRLinux product by themselves.
+To build bootloader image for NXP LX2XXX platform, it only needs to add below
+contents in local.conf file, and then build WRLinux image as usual.
 
 	BB_NO_NETWORK = '0'
 	ACCEPT_FSL_EULA = "1"
@@ -404,8 +412,8 @@ and then build WRLinux image as usual.
 	CUSTOMER_RECIPES:freescale-layer += 'qoriq-cst-native'
 	CUSTOMER_RECIPES:freescale-layer += 'qoriq-atf-tools-native'
 
-Note: If customers want to integrate bootloader into their own product, they MUST consult NXP and their own
-      legal department.
+Note: If customers want to integrate bootloader into their own product, they
+      MUST consult NXP and their own legal department.
 
 13. CAN
 =======
