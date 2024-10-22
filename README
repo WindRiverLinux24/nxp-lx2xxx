@@ -23,7 +23,7 @@ when using the Wind River setup.sh wrapper.
 
 License
 -------
-Copyright (C) 2023 Wind River Systems, Inc.
+Copyright (C) 2024 Wind River Systems, Inc.
 
 The right to copy, distribute or otherwise make use of this software may
 be licensed only pursuant to the terms of an applicable Wind River license
@@ -60,7 +60,7 @@ along with patch descriptions use git whatchanged on the default
 kernel (git whatchanged <kernel_type>..<bsp_name>). For example:
 
   # cd tmp-glibc/work-shared/<bsp_name>/kernel-source
-  # git whatchanged v6.1/standard/base..v6.1/standard/nxp-sdk-6.1/nxp-soc
+  # git whatchanged v6.6/standard/base..v6.6/standard/nxp-sdk-6.6/nxp-soc
 
 
 4. Boot Instructions
@@ -191,13 +191,13 @@ off off on 		Load from NOR Flash Dev#1
 To get more details about above descriptions, please refer to instructions
 mentioned in the sections
 
-	"4.8 Layerscape LDP memory layout and userland"
+	"3.8 Layerscape LDP memory layout and userland"
 and
-	"4.7.10 Quick start guide for LX2160ARDB Rev2"
+	"3.7.10 Quick start guide for LX2160ARDB Rev2"
 
 in the NXP's SDK user manual
 
-	"LLDPUG_RevL6.1.1-1.0.0.pdf".
+	"UG10081_LLDP_6.1.55_2.2.0.pdf".
 
 
 6. Creating Partitioned Images(WIC)
@@ -208,7 +208,7 @@ partitioned image on a SD card. The wic command
 generates partitioned images from existing OpenEmbedded build artifacts.
 User can refer to the below URL to get more WIC details:
 
-https://docs.yoctoproject.org/dev-manual/common-tasks.html#creating-partitioned-images-using-wic
+https://docs.yoctoproject.org/dev-manual/wic.html
 
 This BSP supports disk images for SD card.
 After build the project, user will get a WIC image under the directory
@@ -301,13 +301,13 @@ If boot from SD card
 To get more details about above descriptions, please refer to instructions
 mentioned in the NXP's SDK user manual
 
-	"4.7.10.5 Bringing up DPPA2 network interfaces"
+	"3.7.10.5 Bringing up DPPA2 network interfaces"
 in
-	"LLDPUG_RevL6.1.1-1.0.0.pdf".
+	"UG10081_LLDP_6.1.55_2.2.0.pdf".
 
 Note:
-In above PDF file, section "4.7.10.5.3 Add and destroy network interfaces", describe the
-steps about how to destroy network interfaces. But it is not compatible with the latest sdk v6.1 kernel.
+In above PDF file, section "3.7.10.5.3 Add and destroy network interfaces", describe the
+steps about how to destroy network interfaces. But it is not compatible with the latest sdk v6.6 kernel.
 It is need to add a command to disconnect dprc and dpmac before unbind dpmac. Example as below:
 
 Add a DPNI object and connect it to a DPMAC.
